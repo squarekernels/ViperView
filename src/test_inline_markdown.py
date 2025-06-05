@@ -1,6 +1,8 @@
 import unittest
 from inline_markdown import (
     split_nodes_delimiter,
+    extract_markdown_images,
+    extract_markdown_links
 )
 
 from textnode import TextNode, TextType
@@ -86,6 +88,60 @@ class TestInlineMarkdown(unittest.TestCase):
             new_nodes,
         )
 
+    def test_extract_images_no_images(self):
+        matches = extract_markdown_images(
+            "My email is lane@example.com and my friend's email is hunter@example.com"
+        )
+        self.assertListEqual([], matches)
+
+    def test_extract_markdown_images(self):
+        matches = extract_markdown_images(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)"
+        )
+        self.assertListEqual([("image", "https://i.imgur.com/zjjcJKZ.png")], matches)
+
+
+    def test_extract_markdown_images_multiple(self):
+        matches = extract_markdown_images(
+            "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        )
+        self.assertListEqual([('rick roll', 'https://i.imgur.com/aKaOqIh.gif'), ('obi wan', 'https://i.imgur.com/fJRm4Vk.jpeg')], matches)
+
+    def test_extract_images_empty(self):
+        matches = extract_markdown_images("")
+        self.assertListEqual([], matches)
+
+
+    def test_extract_markdown_links(self):
+        matches = extract_markdown_links(
+            "This is text with a [link](https://boot.dev)"
+        )
+        self.assertListEqual(
+            [("link", "https://boot.dev")],
+            matches,
+        )
+
+    def test_extract_markdown_links_multiple(self):
+        matches = extract_markdown_links(
+            "This is text with a [link](https://boot.dev) and [another link](https://blog.boot.dev)"
+        )
+        self.assertListEqual(
+            [
+                ("link", "https://boot.dev"),
+                ("another link", "https://blog.boot.dev"),
+            ],
+            matches,
+        )
+
+    def test_extract_links_empty(self):
+        matches = extract_markdown_links("")
+        self.assertListEqual([], matches)
+
+    def test_extract_links_no_links(self):
+        matches = extract_markdown_links(
+            "My email is lane@example.com and my friend's email is hunter@example.com"
+        )
+        self.assertListEqual([], matches)
 
 if __name__ == "__main__":
     unittest.main()
