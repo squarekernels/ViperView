@@ -10,7 +10,7 @@ class HTMLNode:
 
     def props_to_html(self):
         if not self.props:
-            return ""
+            return ''
         return ''.join(f' {key}="{value}"' for key, value in self.props.items())
 
     
@@ -22,8 +22,6 @@ class HTMLNode:
             f"props={self.props})"
         )
     
-
-
 class LeafNode(HTMLNode):
     def __init__(self, tag, value, props=None):
         if value is None:
@@ -36,6 +34,7 @@ class LeafNode(HTMLNode):
         if self.tag is None:
             return f"{self.value}"
         return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
+
 
 class ParentNode(HTMLNode):
     def __init__(self, tag, children, props=None):
