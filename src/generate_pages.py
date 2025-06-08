@@ -21,20 +21,20 @@ def extract_title(markdown):
     else: 
         raise Exception("There is no header in this file")
 
-def check_folders(current_path, template_path, dest_path, rel_path=""):
+def check_folders(basepath, current_path, template_path, dest_path, rel_path=""):
     for item in os.listdir(current_path):
         full_path = os.path.join(current_path, item)
         rel_item_path = os.path.join(rel_path, item)
 
         if os.path.isdir(full_path):
-            check_folders(full_path, template_path, dest_path, rel_item_path)
+            check_folders(basepath, full_path, template_path, dest_path, rel_item_path)
         elif item.endswith(".md"):
             from_path = full_path
             to_rel_path = os.path.splitext(rel_item_path)[0] + ".html"
             to_path = os.path.join(dest_path, to_rel_path)
-            generate_pages(from_path, template_path, to_path)
+            generate_pages(basepath, from_path, template_path, to_path)
 
-def generate_pages(from_path, template_path , dest_path):
+def generate_pages(basepath, from_path, template_path , dest_path):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     markdown = read_contents(from_path)
@@ -47,8 +47,10 @@ def generate_pages(from_path, template_path , dest_path):
 
     template = template.replace("{{ Title }}", title)
     template = template.replace("{{ Content }}", html)
+    template = template.replace("href=/", f"href=/{basepath}")
+    template = template.replace("src=/", f"src=/{basepath}")
 
     write_contents(dest_path, template)
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
-    check_folders(dir_path_content, template_path, dest_dir_path)
+def generate_pages_recursive(base_path, dir_path_content, template_path, dest_dir_path):
+    check_folders(base_path, dir_path_content, template_path, dest_dir_path)
