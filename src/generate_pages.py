@@ -1,4 +1,6 @@
 import re
+from markdown_blocks import markdown_to_html_node
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 def read_contents(file):
     with open(file, "r")as f:
@@ -20,7 +22,14 @@ def generate_pages(from_path, template_path , dest_path):
     markdown = read_contents(from_path)
     template = read_contents(template_path)
 
-    print("markdown: ", markdown)
-    print("template: ", template)
+    html_content = markdown_to_html_node(markdown) 
+    html = html_content.to_html()
     
+    title = extract_title(markdown)
+
+    template = template.replace("{{ Title }}", title)
+    template = template.replace("{{ Content }}", html)
+
+    print(template)
+
 generate_pages("content/index.md", "./template.html", "public/")
