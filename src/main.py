@@ -1,8 +1,8 @@
 from textnode import TextNode, TextType
-from generate_files import generate_files
 
 def main():
-    generate_files("static/", "public/")
-    
+    node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
+    print(node)
+
 if __name__ == "__main__":
     main()
