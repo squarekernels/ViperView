@@ -5,5 +5,5 @@ def extract_title(markdown):
     if header:
         return header.group(1).strip()
     else: 
-        raise Exception("No header found")
+        raise Exception("There is no header in this file")
     
