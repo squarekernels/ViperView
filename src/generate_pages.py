@@ -1,12 +1,18 @@
 import re
 from markdown_blocks import markdown_to_html_node
 from htmlnode import HTMLNode, LeafNode, ParentNode
+from generate_files import copy_files
 
 def read_contents(file):
     with open(file, "r")as f:
         content = f.read()
 
     return content 
+
+def write_contents(file, data):
+    with open(file, "w") as f:
+        f.write(data)
+ 
 
 def extract_title(markdown):
     header = re.search(r"^\s*#\s+(.*)", markdown, re.MULTILINE)
@@ -30,6 +36,6 @@ def generate_pages(from_path, template_path , dest_path):
     template = template.replace("{{ Title }}", title)
     template = template.replace("{{ Content }}", html)
 
-    print(template)
+    write_contents(dest_path, template)
 
-generate_pages("content/index.md", "./template.html", "public/")
+generate_pages("content/index.md", "./template.html", "static/index.html")
